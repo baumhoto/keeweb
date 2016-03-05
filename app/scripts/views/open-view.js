@@ -1,6 +1,7 @@
 'use strict';
 
 var Backbone = require('backbone'),
+    kdbxweb = require('kdbxweb'),
     Keys = require('../const/keys'),
     Alerts = require('../comp/alerts'),
     SecureInput = require('../comp/secure-input'),
@@ -18,6 +19,7 @@ var OpenView = Backbone.View.extend({
         'click .open__icon-open': 'openFile',
         'click .open__icon-new': 'createNew',
         'click .open__icon-dropbox': 'openFromDropbox',
+        'click .open__icon-import': 'importFromXml',
         'click .open__icon-demo': 'createDemo',
         'click .open__pass-input[readonly]': 'openFile',
         'input .open__pass-input': 'inputInput',
@@ -114,31 +116,51 @@ var OpenView = Backbone.View.extend({
     fileSelected: function(e) {
         var file = e.target.files[0];
         if (file) {
-            if (!file.path) {
-                this.showLocalFileAlert();
-            }
-            this.processFile(file);
+            this.processFile(file, (function(success) {
+                if (success && !file.path && this.reading === 'fileData') {
+                    this.showLocalFileAlert();
+                }
+            }).bind(this));
         }
     },
 
     processFile: function(file, complete) {
         var reader = new FileReader();
         reader.onload = (function(e) {
-            if (this.reading === 'fileData') {
-                this.params.id = null;
-                this.params.fileData = e.target.result;
-                this.params.name = file.name.replace(/\.\w+$/i, '');
-                this.params.path = file.path || null;
-                this.params.storage = file.path ? 'file' : null;
-                this.params.rev = null;
-                this.displayOpenFile();
-            } else {
-                this.params.keyFileData = e.target.result;
-                this.params.keyFileName = file.name;
-                this.displayOpenKeyFile();
+            var success = false;
+            switch (this.reading) {
+                case 'fileData':
+                    if (!this.checkOpenFileFormat(e.target.result)) {
+                        break;
+                    }
+                    this.params.id = null;
+                    this.params.fileData = e.target.result;
+                    this.params.name = file.name.replace(/\.\w+$/i, '');
+                    this.params.path = file.path || null;
+                    this.params.storage = file.path ? 'file' : null;
+                    this.params.rev = null;
+                    this.displayOpenFile();
+                    success = true;
+                    break;
+                case 'fileXml':
+                    this.params.id = null;
+                    this.params.fileXml = e.target.result;
+                    this.params.name = file.name.replace(/\.\w+$/i, '');
+                    this.params.path = null;
+                    this.params.storage = null;
+                    this.params.rev = null;
+                    this.importDbWithXml();
+                    success = true;
+                    break;
+                case 'keyFileData':
+                    this.params.keyFileData = e.target.result;
+                    this.params.keyFileName = file.name;
+                    this.displayOpenKeyFile();
+                    success = true;
+                    break;
             }
             if (complete) {
-                complete(true);
+                complete(success);
             }
         }).bind(this);
         reader.onerror = (function() {
@@ -147,7 +169,28 @@ var OpenView = Backbone.View.extend({
                 complete(false);
             }
         }).bind(this);
-        reader.readAsArrayBuffer(file);
+        if (this.reading === 'fileXml') {
+            reader.readAsText(file);
+        } else {
+            reader.readAsArrayBuffer(file);
+        }
+    },
+
+    checkOpenFileFormat: function(fileData) {
+        var fileSig = new Uint32Array(fileData, 0, 2);
+        if (fileSig[0] !== kdbxweb.Consts.Signatures.FileMagic) {
+            Alerts.error({ header: Locale.openWrongFile, body: Locale.openWrongFileBody });
+            return false;
+        }
+        if (fileSig[1] === kdbxweb.Consts.Signatures.Sig2Kdb) {
+            Alerts.error({ header: Locale.openWrongFile, body: Locale.openKdbFileBody });
+            return false;
+        }
+        if (fileSig[1] !== kdbxweb.Consts.Signatures.Sig2Kdbx) {
+            Alerts.error({ header: Locale.openWrongFile, body: Locale.openWrongFileBody });
+            return false;
+        }
+        return true;
     },
 
     displayOpenFile: function() {
@@ -164,12 +207,15 @@ var OpenView = Backbone.View.extend({
         this.inputEl.focus();
     },
 
-    setFile: function(file, keyFile) {
+    setFile: function(file, keyFile, fileReadyCallback) {
         this.reading = 'fileData';
         this.processFile(file, (function(success) {
             if (success && keyFile) {
                 this.reading = 'keyFileData';
                 this.processFile(keyFile);
+            }
+            if (success && typeof fileReadyCallback === 'function') {
+                fileReadyCallback();
             }
         }).bind(this));
     },
@@ -177,6 +223,12 @@ var OpenView = Backbone.View.extend({
     openFile: function() {
         if (!this.busy) {
             this.openAny('fileData');
+        }
+    },
+
+    importFromXml: function() {
+        if (!this.busy) {
+            this.openAny('fileXml', 'xml');
         }
     },
 
@@ -310,10 +362,8 @@ var OpenView = Backbone.View.extend({
         var dataFile = _.find(files, function(file) { return file.name.split('.').pop().toLowerCase() === 'kdbx'; });
         var keyFile = _.find(files, function(file) { return file.name.split('.').pop().toLowerCase() === 'key'; });
         if (dataFile) {
-            if (!dataFile.path) {
-                this.showLocalFileAlert();
-            }
-            this.setFile(dataFile, keyFile);
+            this.setFile(dataFile, keyFile,
+                dataFile.path ? null : this.showLocalFileAlert.bind(this));
         }
     },
 
@@ -451,6 +501,16 @@ var OpenView = Backbone.View.extend({
         } else {
             this.trigger('close');
         }
+    },
+
+    importDbWithXml: function() {
+        if (this.busy || !this.params.name) {
+            return;
+        }
+        this.$el.toggleClass('open--opening', true);
+        this.inputEl.attr('disabled', 'disabled');
+        this.busy = true;
+        this.afterPaint(this.model.importFileWithXml.bind(this.model, this.params, this.openDbComplete.bind(this)));
     }
 });
 

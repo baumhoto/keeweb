@@ -14,7 +14,13 @@ Storage providers, usability improvements
 `+` usernames autocomplete  
 `+` shortcut to copy website  
 `+` shortcuts while the app is in background  
+`+` build for 32-bit linux  
+`+` ability to import xml  
+`+` warning for kdb files  
+`+` hide empty fields  
+`+` overall spacing increased  
 `-` fix #88: capslock indicator  
+`-` fix file settings input behavior  
 
 ##### v1.0.4 (2016-02-25)
 Workaround for Chrome bug  

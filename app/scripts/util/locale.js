@@ -121,6 +121,10 @@ var Locale = {
         'Changes you make will not be saved back to file system. ' +
         'To get the file with your data, export it from settings.',
     openLocalFileDontShow: 'Don\'t show this again',
+    openWrongFile: 'Bad file',
+    openWrongFileBody: 'This file format is not supported. This app works with KeePass database format files (KDBX).',
+    openKdbFileBody: 'You are opening an old version format file (KDB). This app supports only new format (KDBX), ' +
+        'please use KeePass v2 to convert between them.',
 
     detAttDownload: 'Shift-click attachment button to download or ',
     detAttDelToRemove: 'Delete to remove',
@@ -159,7 +163,6 @@ var Locale = {
     detUpdated: 'Updated',
     detHistory: 'History',
     detNetField: 'New Field',
-    detAddField: 'add field',
     detAttachments: 'Attachments',
     detDelFromTrash: 'Delete from trash?',
     detDelFromTrashBody: 'You will not be able to put it back.',
@@ -167,6 +170,12 @@ var Locale = {
     detFieldCopied: 'Copied',
     detFieldCopiedTime: 'Copied for {} seconds',
     detCopyHint: 'You can copy field value with click on its title',
+    detMore: 'more',
+    detClickToAddField: 'click to add a new field',
+    detMenuAddNewField: 'Add new field',
+    detMenuShowEmpty: 'Show empty fields',
+    detMenuHideEmpty: 'Hide empty fields',
+    detMenuAddField: 'Add {}',
 
     appSecWarn: 'Not Secure!',
     appSecWarnBody1: 'You have loaded this app with insecure connection. ' +
