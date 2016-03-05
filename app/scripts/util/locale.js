@@ -243,6 +243,7 @@ var Locale = {
     setGenLockCopy: 'Auto-lock on password copy',
     setGenAdvanced: 'Advanced',
     setGenDevTools: 'Show dev tools',
+    setGenFocusPrevious: 'Focus previous application when value is copied to clipboard',
 
     setFilePath: 'File path',
     setFileStorage: 'This file is opened from {}.',

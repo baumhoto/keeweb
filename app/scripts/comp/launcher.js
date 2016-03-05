@@ -109,6 +109,12 @@ if (window.process && window.process.versions && window.process.versions.electro
                 proxy = match && match[1] ? { host: match[1], port: +match[2] } : null;
                 callback(proxy);
             });
+        },
+        isFocused: function() {
+            return this.remReq('app').isFocused();
+        },
+        focusPrevious : function() {
+            this.remReq('app').focusPrevious();
         }
     };
     Backbone.on('launcher-exit-request', function() {

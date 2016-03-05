@@ -27,6 +27,7 @@ var SettingsGeneralView = Backbone.View.extend({
         'change .settings__general-lock-on-copy': 'changeLockOnCopy',
         'change .settings__general-table-view': 'changeTableView',
         'change .settings__general-colorful-icons': 'changeColorfulIcons',
+        'change .settings__general-focusPrevious': 'changeFocusPrevious',
         'click .settings__general-update-btn': 'checkUpdate',
         'click .settings__general-restart-btn': 'restartApp',
         'click .settings__general-download-update-btn': 'downloadUpdate',
@@ -75,7 +76,9 @@ var SettingsGeneralView = Backbone.View.extend({
             updateFound: updateFound,
             updateManual: updateManual,
             releaseNotesLink: Links.ReleaseNotes,
-            colorfulIcons: AppSettingsModel.instance.get('colorfulIcons')
+            colorfulIcons: AppSettingsModel.instance.get('colorfulIcons'),
+            canFocusPrevious: !!Launcher,
+            focusPrevious: !!Launcher && AppSettingsModel.instance.get('focusPrevious')
         });
     },
 
@@ -211,6 +214,11 @@ var SettingsGeneralView = Backbone.View.extend({
         if (Launcher) {
             Launcher.openDevTools();
         }
+    },
+    
+    changeFocusPrevious: function(e) {
+        var focusPrevious = e.target.checked || false;
+        AppSettingsModel.instance.set('focusPrevious', focusPrevious);
     }
 });
 

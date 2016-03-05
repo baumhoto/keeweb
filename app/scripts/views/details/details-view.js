@@ -26,7 +26,8 @@ var Backbone = require('backbone'),
     Locale = require('../../util/locale'),
     Tip = require('../../util/tip'),
     Timeouts = require('../../const/timeouts'),
-    FileSaver = require('filesaver');
+    FileSaver = require('filesaver'),
+    Launcher = require('../../comp/launcher');
 
 var DetailsView = Backbone.View.extend({
     template: require('templates/details/details.hbs'),
@@ -384,6 +385,10 @@ var DetailsView = Backbone.View.extend({
             var copyRes = CopyPaste.copy(fieldText);
             if (copyRes) {
                 this.fieldCopied({ source: editView, copyRes: copyRes });
+            }
+            if(AppSettingsModel.instance.get('focusPreviousAppOnCopy') && Launcher.isFocused())
+            {
+                Launcher.focusPrevious();
             }
         }
     },

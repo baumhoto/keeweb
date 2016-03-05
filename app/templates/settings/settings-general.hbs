@@ -105,6 +105,13 @@
         <label for="settings__general-lock-on-minimize">{{res 'setGenLockMinimize'}}</label>
     </div>
     {{/if}}
+    {{#if canFocusPrevious}}
+    <div>
+        <input type="checkbox" class="settings__input input-base settings__general-focusPrevious" id="settings__general-focusPrevious"
+            {{#if focusPrevious}}checked{{/if}} />
+        <label for="settings__general-focusPrevious">{{res 'setGenFocusPrevious'}}</label>
+    </div>
+    {{/if}}
     <div>
         <input type="checkbox" class="settings__input input-base settings__general-lock-on-copy" id="settings__general-lock-on-copy"
                {{#if lockOnCopy}}checked{{/if}} />

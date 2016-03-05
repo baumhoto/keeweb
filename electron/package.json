@@ -8,6 +8,7 @@
   "license": "MIT",
   "readme": "../README.md",
   "dependencies": {
-    "node-stream-zip": "^1.2.1"
+    "node-stream-zip": "^1.2.1",
+    "robotjs": "^0.3.7"
   }
 }

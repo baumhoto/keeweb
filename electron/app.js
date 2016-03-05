@@ -9,7 +9,8 @@ var app = require('app'),
     BrowserWindow = require('browser-window'),
     Menu = require('menu'),
     Tray = require('tray'),
-    globalShortcut = require('electron').globalShortcut;
+    globalShortcut = require('electron').globalShortcut,
+    robot = require("robotjs");
 
 var mainWindow = null,
     appIcon = null,
@@ -88,6 +89,16 @@ app.minimizeApp = function() {
 };
 app.getMainWindow = function() {
     return mainWindow;
+};
+app.isFocused = function() {
+    return mainWindow.isFocused();
+};
+app.focusPrevious = function() {
+    if (process.platform === 'darwin') {
+        robot.keyTap('tab', 'command');
+    } else {
+        robot.keyTap('tab', 'alt');
+    }
 };
 
 function createMainWindow() {
@@ -264,6 +275,7 @@ function setGlobalShortcuts() {
             if(mainWindow.isFocused())
             {
                 mainWindow.hide();
+                app.focusPrevious();
             } else {
                 mainWindow.show();
             }        
