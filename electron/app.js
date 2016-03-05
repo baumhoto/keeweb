@@ -258,4 +258,14 @@ function setGlobalShortcuts() {
             });
         } catch (e) {}
     });
+    
+    globalShortcut.register(shortcutModifiers + 'K', function() { 
+        if (mainWindow) {
+            if(mainWindow.isFocused())
+            {
+                mainWindow.hide();
+            } else {
+                mainWindow.show();
+            }        
+    }}); 
 }
