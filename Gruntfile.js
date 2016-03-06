@@ -18,11 +18,6 @@ module.exports = function(grunt) {
     var dt = new Date().toISOString().replace(/T.*/, '');
     var electronVersion = '0.35.6';
     var minElectronVersionForUpdate = '0.32.0';
-    var zipCommentPlaceholder = 'zip_comment_placeholder_that_will_be_replaced_with_hash';
-
-    while (zipCommentPlaceholder.length < 512) {
-        zipCommentPlaceholder += '.';
-    }
 
     function replaceFont(css) {
         css.walkAtRules('font-face', function (rule) {
@@ -107,14 +102,9 @@ module.exports = function(grunt) {
                 dest: 'dist/desktop/KeeWeb.win32.exe',
                 nonull: true
             },
-            'desktop_linux_x64': {
+            'desktop_linux': {
                 src: 'tmp/desktop/KeeWeb.linux.x64.zip',
                 dest: 'dist/desktop/KeeWeb.linux.x64.zip',
-                nonull: true
-            },
-            'desktop_linux_ia32': {
-                src: 'tmp/desktop/KeeWeb.linux.ia32.zip',
-                dest: 'dist/desktop/KeeWeb.linux.ia32.zip',
                 nonull: true
             }
         },
@@ -293,27 +283,6 @@ module.exports = function(grunt) {
                 'app-version': pkg.version,
                 'build-version': '<%= gitinfo.local.branch.current.shortSHA %>'
             },
-            osx: {
-                options: {
-                    platform: 'darwin',
-                    arch: 'x64',
-                    icon: 'graphics/app.icns'
-                }
-            },
-            linux64: {
-                options: {
-                    platform: 'linux',
-                    arch: 'x64',
-                    icon: 'graphics/app.ico'
-                }
-            },
-            linux32: {
-                options: {
-                    platform: 'linux',
-                    arch: 'ia32',
-                    icon: 'graphics/app.ico'
-                }
-            },
             win32: {
                 options: {
                     platform: 'win32',
@@ -337,26 +306,11 @@ module.exports = function(grunt) {
                 out: path.join(__dirname, 'tmp/desktop'),
                 basePath: __dirname,
                 config: {
-                    osx: {
-                        title: 'KeeWeb',
-                        background: path.join(__dirname, 'graphics/dmg-bg.png'),
-                        icon: path.join(__dirname, 'graphics/app.icns'),
-                        'icon-size': 80,
-                        contents: [
-                            {'x': 438, 'y': 344, 'type': 'link', 'path': '/Applications'},
-                            {'x': 192, 'y': 344, 'type': 'file'}
-                        ]
-                    },
+
                     win: {
                         title: 'KeeWeb',
                         icon: path.join(__dirname, 'graphics/app.ico')
                     }
-                }
-            },
-            osx: {
-                options: {
-                    platform: 'osx',
-                    appPath: path.join(__dirname, 'tmp/desktop/KeeWeb-darwin-x64/KeeWeb.app')
                 }
             },
             win: {
@@ -367,34 +321,20 @@ module.exports = function(grunt) {
             }
         },
         compress: {
-            linux64: {
+            linux: {
                 options: { archive: 'tmp/desktop/KeeWeb.linux.x64.zip' },
                 files: [{ cwd: 'tmp/desktop/KeeWeb-linux-x64', src: '**', expand: true }]
             },
-            linux32: {
-                options: { archive: 'tmp/desktop/KeeWeb.linux.ia32.zip' },
-                files: [{ cwd: 'tmp/desktop/KeeWeb-linux-ia32', src: '**', expand: true }]
-            },
             'desktop_update': {
-                options: { archive: 'dist/desktop/UpdateDesktop.zip', comment: zipCommentPlaceholder },
+                options: { archive: 'dist/desktop/UpdateDesktop.zip' },
                 files: [{ cwd: 'tmp/desktop/app', src: '**', expand: true }]
-            }
-        },
-        'sign-archive': {
-            'desktop_update': {
-                options: {
-                    file: 'dist/desktop/UpdateDesktop.zip',
-                    signature: zipCommentPlaceholder,
-                    privateKey: 'keys/private-key.pem'
-                }
             }
         },
         'validate-desktop-update': {
             desktop: {
                 options: {
                     file: 'dist/desktop/UpdateDesktop.zip',
-                    expected: ['main.js', 'app.js', 'index.html', 'package.json', 'node_modules/node-stream-zip/node_stream_zip.js'],
-                    publicKey: 'app/resources/public-key.pem'
+                    expected: ['main.js', 'app.js', 'index.html', 'package.json', 'node_modules/node-stream-zip/node_stream_zip.js']
                 }
             }
         }
@@ -402,7 +342,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', [
         'gitinfo',
-        'bower-install-simple',
+      //  'bower-install-simple',
         'clean',
         'jshint',
         'copy:html',
@@ -426,17 +366,14 @@ module.exports = function(grunt) {
         'clean:desktop_dist',
         'copy:desktop_app_content',
         'string-replace:desktop_html',
-        'compress:desktop_update',
-        'sign-archive:desktop_update',
-        'validate-desktop-update',
+//        'compress:desktop_update',
+//        'validate-desktop-update',
         'electron',
         'electron_builder',
-        'compress:linux64',
-        'compress:linux32',
-        'copy:desktop_osx',
+//        'compress:linux',
+//        'copy:desktop_osx',
         'copy:desktop_win',
-        'copy:desktop_linux_x64',
-        'copy:desktop_linux_ia32',
-        'clean:desktop_tmp'
+//        'copy:desktop_linux',
+        //'clean:desktop_tmp'
     ]);
 };
