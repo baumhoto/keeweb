@@ -254,11 +254,21 @@ function notifyOpenFile() {
 }
 
 function setGlobalShortcuts() {
-    var shortcutModifiers = process.platform === 'darwin' ? 'Ctrl+Alt+' : 'Shift+Alt+';
+    var shortcutModifiers = 'Shift+Alt+';
     var shortcuts = {
         C: 'copy-password',
         B: 'copy-user',
-        U: 'copy-url'
+        U: 'copy-url',
+        1: 'favorite1',
+        2: 'favorite2',
+        3: 'favorite3',
+        4: 'favorite4',
+        5: 'favorite5',
+        6: 'favorite6',
+        7: 'favorite7',
+        8: 'favorite8',
+        9: 'favorite9',
+        0: 'favorite0',
     };
     Object.keys(shortcuts).forEach(function(key) {
         var shortcut = shortcutModifiers + key;

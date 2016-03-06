@@ -37,7 +37,7 @@ var AppModel = Backbone.Model.extend({
         this.listenTo(Backbone, 'add-filter', this.addFilter);
         this.listenTo(Backbone, 'set-sort', this.setSort);
         this.listenTo(Backbone, 'empty-trash', this.emptyTrash);
-
+      
         this.appLogger = new Logger('app');
     },
 
@@ -78,11 +78,13 @@ var AppModel = Backbone.Model.extend({
         var that = this;
         file.forEachEntry({}, function(entry) {
             _.forEach(entry.tags, function(tag) {
+                if((tag.toLowerCase().indexOf('favorite') < 0)) {
                 if (!tagsHash[tag.toLowerCase()]) {
                     tagsHash[tag.toLowerCase()] = true;
                     that.tags.push(tag);
                 }
-            });
+             }
+           });
         });
         this.tags.sort();
     },

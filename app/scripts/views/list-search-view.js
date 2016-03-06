@@ -69,6 +69,16 @@ var ListSearchView = Backbone.View.extend({
         this.listenTo(this, 'show', this.viewShown);
         this.listenTo(this, 'hide', this.viewHidden);
         this.listenTo(Backbone, 'filter', this.filterChanged);
+        this.listenTo(Backbone, 'favorite1', function() { this.inputEl.val('Favorite1'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite2', function() { this.inputEl.val('Favorite2'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite3', function() { this.inputEl.val('Favorite3'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite4', function() { this.inputEl.val('Favorite4'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite5', function() { this.inputEl.val('Favorite5'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite6', function() { this.inputEl.val('Favorite6'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite7', function() { this.inputEl.val('Favorite7'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite8', function() { this.inputEl.val('Favorite8'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite9', function() { this.inputEl.val('Favorite9'); this.inputChange(); }  );
+        this.listenTo(Backbone, 'favorite0', function() { this.inputEl.val('Favorite0'); this.inputChange(); }  );
     },
 
     remove: function() {
