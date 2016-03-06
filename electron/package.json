@@ -10,5 +10,8 @@
   "dependencies": {
     "node-stream-zip": "^1.2.1",
     "robotjs": "^0.3.7"
+  },
+  "devDependencies": {
+    "robotjs": "^0.3.7"
   }
 }

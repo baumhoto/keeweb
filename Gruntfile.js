@@ -16,7 +16,7 @@ module.exports = function(grunt) {
     var webpack = require('webpack');
     var pkg = require('./package.json');
     var dt = new Date().toISOString().replace(/T.*/, '');
-    var electronVersion = '0.35.6';
+    var electronVersion = '0.36.10';
     var minElectronVersionForUpdate = '0.32.0';
     var zipCommentPlaceholder = 'zip_comment_placeholder_that_will_be_replaced_with_hash';
 
@@ -317,7 +317,7 @@ module.exports = function(grunt) {
             win32: {
                 options: {
                     platform: 'win32',
-                    arch: 'ia32',
+                    arch: 'x64',
                     icon: 'graphics/app.ico',
                     'version-string': {
                         CompanyName: 'antelle.github.io',
