@@ -386,7 +386,9 @@ var DetailsView = Backbone.View.extend({
             if (copyRes) {
                 this.fieldCopied({ source: editView, copyRes: copyRes });
             }
-            if(AppSettingsModel.instance.get('focusPreviousAppOnCopy') && Launcher.isFocused())
+            //console.log(AppSettingsModel.instance.get('focusPreviousAppOnCopy'));
+            //if(AppSettingsModel.instance.get('focusPreviousAppOnCopy') ) &&
+            if(Launcher.isFocused())
             {
                 Launcher.focusPrevious();
             }

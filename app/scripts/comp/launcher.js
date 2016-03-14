@@ -115,6 +115,9 @@ if (window.process && window.process.versions && window.process.versions.electro
         },
         focusPrevious : function() {
             this.remReq('app').focusPrevious();
+        },
+        typeClipboardText : function() {
+            this.remReq('app').typeClipboardText(this.getClipboardText());
         }
     };
     Backbone.on('launcher-exit-request', function() {
@@ -122,6 +125,12 @@ if (window.process && window.process.versions && window.process.versions.electro
     });
     Backbone.on('launcher-minimize', function() {
         setTimeout(function() { Backbone.trigger('app-minimized'); }, 0);
+    });
+    Backbone.on('launcher-clear-clipboard', function() {
+        Launcher.clearClipboardText();
+    });
+    Backbone.on('launcher-type-clipboard', function() {
+        Launcher.typeClipboardText();
     });
     window.launcherOpen = function(path) {
         Backbone.trigger('launcher-open-file', path);
