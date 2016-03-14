@@ -97,9 +97,23 @@ app.focusPrevious = function() {
     if (process.platform === 'darwin') {
         robot.keyTap('tab', 'command');
     } else {
-        robot.keyTap('tab', 'alt');
+      robot.keyTap('tab', 'alt');
+      robot.keyTap('enter');
     }
 };
+app.pasteClipboard = function() {
+  if (process.platform === 'darwin') {
+      robot.keyTap('v', 'command');
+  } else {
+    robot.keyTap('v', 'control');
+  }
+};
+app.typeClipboardText = function(text) {
+//console.log('text: ' + text);
+  //robot.setKeyboardDelay(1000);
+  robot.typeString('dies ist ein test');
+};
+
 
 function createMainWindow() {
     mainWindow = new BrowserWindow({
@@ -255,6 +269,7 @@ function notifyOpenFile() {
 
 function setGlobalShortcuts() {
     var shortcutModifiers = 'Shift+Alt+';
+    var shortcutModifiers2 = process.platform === 'darwin' ? 'Shift+Cmd+' : 'Shift+Super+';
     var shortcuts = {
         C: 'copy-password',
         B: 'copy-user',
@@ -278,9 +293,17 @@ function setGlobalShortcuts() {
                 emitBackboneEvent(eventName);
             });
         } catch (e) {}
+        var shortcut2 = shortcutModifiers2 + key;
+        try {
+            globalShortcut.register(shortcut2, function () {
+                emitBackboneEvent(eventName);
+                app.pasteClipboard();
+                emitBackboneEvent('launcher-clear-clipboard');
+            });
+        } catch (e) {}
     });
-    
-    globalShortcut.register(shortcutModifiers + 'K', function() { 
+
+    globalShortcut.register(shortcutModifiers + 'K', function() {
         if (mainWindow) {
             if(mainWindow.isFocused())
             {
@@ -288,6 +311,12 @@ function setGlobalShortcuts() {
                 app.focusPrevious();
             } else {
                 mainWindow.show();
-            }        
-    }}); 
+            }
+    }});
+
+    globalShortcut.register(shortcutModifiers + 'P', function() {
+          app.typeClipboardText();
+          //emitBackboneEvent('launcher-type-clipboard');
+          //emitBackboneEvent('launcher-clear-clipboard');
+    });
 }
